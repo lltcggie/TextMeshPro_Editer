@@ -368,21 +368,71 @@ struct KerningTable
     }
 };
 
+struct TMP_GlyphValueRecord
+{
+    float m_XPlacement;
+    float m_YPlacement;
+    float m_XAdvance;
+    float m_YAdvance;
+
+    friend Serializer& operator<<(Serializer& s, const TMP_GlyphValueRecord& o)
+    {
+        s << o.m_XPlacement;
+        s << o.m_YPlacement;
+        s << o.m_XAdvance;
+        s << o.m_YAdvance;
+        return s;
+    }
+
+    friend Deserializer& operator>>(Deserializer& d, TMP_GlyphValueRecord& o)
+    {
+        d >> o.m_XPlacement;
+        d >> o.m_YPlacement;
+        d >> o.m_XAdvance;
+        d >> o.m_YAdvance;
+        return d;
+    }
+};
+
+struct TMP_GlyphAdjustmentRecord
+{
+    uint32_t m_GlyphIndex;
+    TMP_GlyphValueRecord m_GlyphValueRecord;
+
+    friend Serializer& operator<<(Serializer& s, const TMP_GlyphAdjustmentRecord& o)
+    {
+        s << o.m_GlyphIndex;
+        s << o.m_GlyphValueRecord;
+        return s;
+    }
+
+    friend Deserializer& operator>>(Deserializer& d, TMP_GlyphAdjustmentRecord& o)
+    {
+        d >> o.m_GlyphIndex;
+        d >> o.m_GlyphValueRecord;
+        return d;
+    }
+};
+
 struct TMP_GlyphPairAdjustmentRecord
 {
-    // TODO: 必要になったか書く
+    TMP_GlyphAdjustmentRecord m_FirstAdjustmentRecord;
+    TMP_GlyphAdjustmentRecord m_SecondAdjustmentRecord;
+    int32_t m_FeatureLookupFlags;
 
     friend Serializer& operator<<(Serializer& s, const TMP_GlyphPairAdjustmentRecord& o)
     {
-        // TODO: 必要になったら書く
-        assert(0);
+        s << o.m_FirstAdjustmentRecord;
+        s << o.m_SecondAdjustmentRecord;
+        s << o.m_FeatureLookupFlags;
         return s;
     }
 
     friend Deserializer& operator>>(Deserializer& d, TMP_GlyphPairAdjustmentRecord& o)
     {
-        // TODO: 必要になったら書く
-        assert(0);
+        d >> o.m_FirstAdjustmentRecord;
+        d >> o.m_SecondAdjustmentRecord;
+        d >> o.m_FeatureLookupFlags;
         return d;
     }
 };
