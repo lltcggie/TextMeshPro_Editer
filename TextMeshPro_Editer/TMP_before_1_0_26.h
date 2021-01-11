@@ -1,15 +1,39 @@
 #pragma once
 
-#include "TMP_before_1_0_26.h"
+#include <string>
+#include <vector>
+#include <stdint.h>
+#include <assert.h>
+#include "Serializer_Deserializer.h"
 
 // 置換用正規表現メモ
 // ^.+\s
 // s << o.
 
-// TMP 1.0.26
+// TMP 1.0.26以前(Stranded Deepで使われているバージョン)
 
-namespace TMP_1_0_26
+namespace TMP_before_1_0_26
 {
+    struct PPtrObject
+    {
+        int32_t m_FileID;
+        int64_t m_PathID;
+
+        friend Serializer& operator<<(Serializer& s, const PPtrObject& o)
+        {
+            s << o.m_FileID;
+            s << o.m_PathID;
+            return s;
+        }
+
+        friend Deserializer& operator>>(Deserializer& d, PPtrObject& o)
+        {
+            d >> o.m_FileID;
+            d >> o.m_PathID;
+            return d;
+        }
+    };
+
     struct FaceInfo
     {
         std::string Name;
@@ -27,8 +51,6 @@ namespace TMP_1_0_26
         float SubSize;
         float Underline;
         float UnderlineThickness;
-        float strikethrough;
-        float strikethroughThickness;
         float TabWidth;
         float Padding;
         float AtlasWidth;
@@ -51,8 +73,6 @@ namespace TMP_1_0_26
             s << o.SubSize;
             s << o.Underline;
             s << o.UnderlineThickness;
-            s << o.strikethrough;
-            s << o.strikethroughThickness;
             s << o.TabWidth;
             s << o.Padding;
             s << o.AtlasWidth;
@@ -77,8 +97,6 @@ namespace TMP_1_0_26
             d >> o.SubSize;
             d >> o.Underline;
             d >> o.UnderlineThickness;
-            d >> o.strikethrough;
-            d >> o.strikethroughThickness;
             d >> o.TabWidth;
             d >> o.Padding;
             d >> o.AtlasWidth;
@@ -87,56 +105,65 @@ namespace TMP_1_0_26
         }
     };
 
-    struct TMP_GlyphValueRecord
+    struct TMP_Glyph
     {
-        float m_XPlacement;
-        float m_YPlacement;
-        float m_XAdvance;
-        float m_YAdvance;
+        int32_t id;
+        float x;
+        float y;
+        float width;
+        float height;
+        float xOffset;
+        float yOffset;
+        float xAdvance;
+        float scale;
 
-        friend Serializer& operator<<(Serializer& s, const TMP_GlyphValueRecord& o)
+        friend Serializer& operator<<(Serializer& s, const TMP_Glyph& o)
         {
-            s << o.m_XPlacement;
-            s << o.m_YPlacement;
-            s << o.m_XAdvance;
-            s << o.m_YAdvance;
+            s << o.id;
+            s << o.x;
+            s << o.y;
+            s << o.width;
+            s << o.height;
+            s << o.xOffset;
+            s << o.yOffset;
+            s << o.xAdvance;
+            s << o.scale;
             return s;
         }
 
-        friend Deserializer& operator>>(Deserializer& d, TMP_GlyphValueRecord& o)
+        friend Deserializer& operator>>(Deserializer& d, TMP_Glyph& o)
         {
-            d >> o.m_XPlacement;
-            d >> o.m_YPlacement;
-            d >> o.m_XAdvance;
-            d >> o.m_YAdvance;
+            d >> o.id;
+            d >> o.x;
+            d >> o.y;
+            d >> o.width;
+            d >> o.height;
+            d >> o.xOffset;
+            d >> o.yOffset;
+            d >> o.xAdvance;
+            d >> o.scale;
             return d;
         }
     };
 
     struct KerningPair
     {
-        uint32_t m_FirstGlyph;
-        TMP_GlyphValueRecord m_FirstGlyphAdjustments;
-        uint32_t m_SecondGlyph;
-        TMP_GlyphValueRecord m_SecondGlyphAdjustments;
+        uint32_t AscII_Left;
+        uint32_t AscII_Right;
         float xOffset;
 
         friend Serializer& operator<<(Serializer& s, const KerningPair& o)
         {
-            s << o.m_FirstGlyph;
-            s << o.m_FirstGlyphAdjustments;
-            s << o.m_SecondGlyph;
-            s << o.m_SecondGlyphAdjustments;
+            s << o.AscII_Left;
+            s << o.AscII_Right;
             s << o.xOffset;
             return s;
         }
 
         friend Deserializer& operator>>(Deserializer& d, KerningPair& o)
         {
-            d >> o.m_FirstGlyph;
-            d >> o.m_FirstGlyphAdjustments;
-            d >> o.m_SecondGlyph;
-            d >> o.m_SecondGlyphAdjustments;
+            d >> o.AscII_Left;
+            d >> o.AscII_Right;
             d >> o.xOffset;
             return d;
         }
@@ -159,24 +186,94 @@ namespace TMP_1_0_26
         }
     };
 
+    struct FontCreationSettings
+    {
+        std::string fontSourcePath;
+        int32_t fontSizingMode;
+        int32_t fontSize;
+        int32_t fontPadding;
+        int32_t fontPackingMode;
+        int32_t fontAtlasWidth;
+        int32_t fontAtlasHeight;
+        int32_t fontCharacterSet;
+        int32_t fontStyle;
+        float fontStyleModifier;
+        int32_t fontRenderMode;
+        int8_t fontKerning;
+
+        friend Serializer& operator<<(Serializer& s, const FontCreationSettings& o)
+        {
+            s << o.fontSourcePath;
+            s << o.fontSizingMode;
+            s << o.fontSize;
+            s << o.fontPadding;
+            s << o.fontPackingMode;
+            s << o.fontAtlasWidth;
+            s << o.fontAtlasHeight;
+            s << o.fontCharacterSet;
+            s << o.fontStyle;
+            s << o.fontStyleModifier;
+            s << o.fontRenderMode;
+            s << o.fontKerning;
+            return s;
+        }
+
+        friend Deserializer& operator>>(Deserializer& d, FontCreationSettings& o)
+        {
+            d >> o.fontSourcePath;
+            d >> o.fontSizingMode;
+            d >> o.fontSize;
+            d >> o.fontPadding;
+            d >> o.fontPackingMode;
+            d >> o.fontAtlasWidth;
+            d >> o.fontAtlasHeight;
+            d >> o.fontCharacterSet;
+            d >> o.fontStyle;
+            d >> o.fontStyleModifier;
+            d >> o.fontRenderMode;
+            d >> o.fontKerning;
+            return d;
+        }
+    };
+
+    struct TMP_FontWeightPair
+    {
+        PPtrObject regularTypeface;
+        PPtrObject italicTypeface;
+
+        friend Serializer& operator<<(Serializer& s, const TMP_FontWeightPair& o)
+        {
+            s << o.regularTypeface;
+            s << o.italicTypeface;
+            return s;
+        }
+
+        friend Deserializer& operator>>(Deserializer& d, TMP_FontWeightPair& o)
+        {
+            d >> o.regularTypeface;
+            d >> o.italicTypeface;
+            return d;
+        }
+    };
+
     struct TMP_FontAsset
     {
-        TMP_before_1_0_26::PPtrObject m_GameObject;
+        PPtrObject m_GameObject;
         uint8_t m_Enabled;
-        TMP_before_1_0_26::PPtrObject m_Script;
+        PPtrObject m_Script;
         std::string m_Name;
         int32_t hashCode;
-        TMP_before_1_0_26::PPtrObject material;
+        PPtrObject material;
         int32_t meterialHashCode;
         int32_t fontAssetType;
         FaceInfo m_fontInfo;
-        TMP_before_1_0_26::PPtrObject atlas;
-        std::vector<TMP_before_1_0_26::TMP_Glyph> m_glyphInfoList;
+        PPtrObject atlas;
+        std::vector<TMP_Glyph> m_glyphInfoList;
         KerningTable m_kerningInfo;
         KerningPair m_kerningPair;
-        std::vector<TMP_before_1_0_26::PPtrObject> fallbackFontAssets;
-        TMP_before_1_0_26::FontCreationSettings fontCreationSettings;
-        std::vector<TMP_before_1_0_26::TMP_FontWeightPair> fontWeights;
+        std::vector<PPtrObject> fallbackFontAssets;
+        FontCreationSettings fontCreationSettings;
+        std::vector<TMP_FontWeightPair> fontWeights;
         float normalStyle;
         float normalSpacingOffset;
         float boldStyle;

@@ -32,5 +32,8 @@
     <ClInclude Include="TMP_1_0_26.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="TMP_before_1_0_26.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -148,6 +148,7 @@
     <ClInclude Include="TMP_1_0_26.h" />
     <ClInclude Include="TMP_1_4_0.h" />
     <ClInclude Include="TMP_1_4_0_LoR.h" />
+    <ClInclude Include="TMP_before_1_0_26.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
