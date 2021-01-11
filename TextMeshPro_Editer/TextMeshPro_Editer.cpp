@@ -1,4 +1,5 @@
 ﻿#include <iostream>
+#include "TMP_1_0_26.h"
 #include "TMP_1_4_0.h"
 #include "TMP_1_4_0_LoR.h"
 #include <vector>
@@ -45,8 +46,8 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	TMP_FontAsset src;
-	TMP_FontAsset_LoR dst;
+	TMP_1_4_0::TMP_FontAsset src;
+	TMP_1_4_0_LoR::TMP_FontAsset dst;
 
 	{
 		std::vector<uint8_t> buf = readFile(argv[1]);
