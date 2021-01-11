@@ -105,11 +105,11 @@ public:
 
     friend Serializer& operator<<(Serializer& s, const std::string& o)
     {
-        const uint32_t size = o.size();
+        const uint32_t size = static_cast<uint32_t>(o.size());
         s << size;
 
         if (size > 0) {
-            const auto dataSize = padding(o.size(), 4u);
+            const auto dataSize = padding(size, 4u);
             const auto pos = s.mData.size();
             s.mData.resize(pos + dataSize, 0);
             memcpy(&s.mData[pos], o.c_str(), size);
@@ -121,7 +121,7 @@ public:
     template<class T>
     friend Serializer& operator<<(Serializer& s, const std::vector<T>& o)
     {
-        const uint32_t size = o.size();
+        const uint32_t size = static_cast<uint32_t>(o.size());
         s << size;
 
         for (size_t i = 0; i < o.size(); i++) {
